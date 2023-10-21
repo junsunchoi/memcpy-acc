@@ -56,7 +56,7 @@ class CommandRouter(val cmd_que_depth: Int)(implicit p: Parameters)
   src_info_queue.io.enq.valid := src_info_fire.fire(src_info_queue.io.enq.ready)
   io.src_info <> src_info_queue.io.deq
   io.num_bytes.bits := src_info_queue.io.deq.bits.isize
-  io.num_bytes.valid := src_info_fire.fire()
+  io.num_bytes.valid := src_info_queue.io.deq.fire
 
   // Memwriter interface
   val dest_info_queue = Module(new Queue(new DstInfo, 4))
