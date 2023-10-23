@@ -6,7 +6,7 @@
 
 #include "accellib.h"
 #include "encoding.h"
-#include "data.h"
+#include "data_helper.h"
 
 int main() {
   uint8_t* result_area = MemcpyAccelSetup(data_len); //fence, write zero
@@ -14,9 +14,10 @@ int main() {
   printf("src start addr: 0x%016" PRIx64 "\n", (uint64_t)data);
   printf("Starting benchmark.\n");
   uint64_t t1 = rdcycle();
-  MemcpyAccel(data,
+  MemcpyAccelMulti(data,
               data_len,
-              result_area); //have to send ip, isize, op, cmpflag
+              result_area,
+              num_benchmarks); //have to send ip, isize, op, cmpflag
   uint64_t t2 = rdcycle();
 
   printf("Start cycle: %" PRIu64 ", End cycle: %" PRIu64 ", Took: %" PRIu64 "\n", 

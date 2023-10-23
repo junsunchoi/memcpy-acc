@@ -1,9 +1,0 @@
-{
-  "name": "memcpy-simple",
-  "jobs": [
-    {
-      "name": "test",
-      "bin": "test.riscv"
-    }
-  ]
-}
