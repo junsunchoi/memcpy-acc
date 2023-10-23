@@ -14,8 +14,8 @@ int main() {
   printf("src start addr: 0x%016" PRIx64 "\n", (uint64_t)data);
   printf("Starting benchmark.\n");
   uint64_t t1 = rdcycle();
-  MemcpyAccelMulti(data,
-              data_len,
+  MemcpyAccel(data1,
+              data1_len,
               result_area,
               num_benchmarks); //have to send ip, isize, op, cmpflag
   uint64_t t2 = rdcycle();
@@ -26,9 +26,9 @@ int main() {
   printf("Checking copied data correctness:\n");
   bool fail = false;
   for (size_t i = 0; i < data_len; i++) {
-    if (data[i] != result_area[i]) {
+    if (data1[i] != result_area[i]) {
       printf("idx %" PRIu64 ": expected: %c got: %c\n",
-          i, data[i], result_area[i]);
+          i, data1[i], result_area[i]);
       fail = true;
     }
   }

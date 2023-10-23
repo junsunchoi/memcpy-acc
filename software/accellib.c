@@ -88,10 +88,10 @@ int MemcpyAccelMulti(const unsigned char** data,
     size_t result_area_consumed = 0;
     for(int i=0; i<num_benchmark; ++i){
         MemcpyAccelNonblocking(data[i], 
-                                data_length[i], 
+                                *(data_length[i]), 
                                 result+result_area_consumed,
                                 &completion_flag);
-        result_area_consumed += data_length[i];
+        result_area_consumed += *(data_length[i]);
     }
     return MemcpyBlockOnCompletion(&completion_flag);
 }

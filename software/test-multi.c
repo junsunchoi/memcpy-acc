@@ -32,13 +32,13 @@ int main() {
   size_t cumul_len = 0;
   for(size_t n=0; n < num_benchmarks; ++n){
     printf("Checking file #%d",n);
-    for (size_t i = cumul_len; i < cumul_len+benchmark_len_array[n]; i++) {
+    for (size_t i = cumul_len; i < cumul_len+ *(benchmark_len_array[n]); i++) {
       if (benchmark_data_array[n][i] != result_area[i]) {
         printf("idx %" PRIu64 ": expected: %c got: %c\n",
             i, benchmark_data_array[n][i], result_area[i]);
         fail = true;
       }
-      cumul_len += benchmark_len_array[n];
+      cumul_len += *(benchmark_len_array[n]);
     }
   }
 
