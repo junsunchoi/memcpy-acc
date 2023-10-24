@@ -27,8 +27,8 @@ int MemcpyAccel(const unsigned char* data,
 volatile int MemcpyBlockOnCompletion(volatile int * completion_flag);
 
 int MemcpyAccelMulti(const unsigned char** data,
-                size_t* data_length,
-                unsigned char** result,
+                unsigned int** data_length,
+                unsigned char* result,
                 const int num_benchmark);
  
 

@@ -78,14 +78,14 @@ int MemcpyAccel(const unsigned char* data,
 }
 
 int MemcpyAccelMulti(const unsigned char** data,
-                size_t* data_length,
-                unsigned char** result,
+                unsigned int** data_length,
+                unsigned char* result,
                 const int num_benchmark) {
     int completion_flag = 0;
 #ifdef NOACCEL_DEBUG
     printf("completion_flag addr : 0x%x\n", &completion_flag);
 #endif
-    size_t result_area_consumed = 0;
+    unsigned int result_area_consumed = 0;
     for(int i=0; i<num_benchmark; ++i){
         MemcpyAccelNonblocking(data[i], 
                                 *(data_length[i]), 
