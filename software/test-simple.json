@@ -3,7 +3,7 @@
   "jobs": [
     {
       "name": "test",
-      "bin": "test.riscv"
+      "bin": "test-simple.riscv"
     }
   ]
 }
