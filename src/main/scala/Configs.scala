@@ -19,7 +19,7 @@ class WithMemcpyAccel extends Config ((site, here, up) => {
   case MemcpyAccelTLB => Some(TLBConfig(nSets = 4, nWays = 4, nSectors = 1, nSuperpageEntries = 1))
   case BuildRoCC => up(BuildRoCC) ++ Seq(
     (p: Parameters) => {
-      val memcpyacc = LazyModule(new MemcpyAccel(OpcodeSet.custom0)(p))
+      val memcpyacc = LazyModule(new MemcpyAccel(OpcodeSet.custom4)(p))
       memcpyacc
     }
   )
