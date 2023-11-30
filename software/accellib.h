@@ -18,18 +18,18 @@ unsigned char * MemcpyAccelSetup(size_t write_region_size);
 void MemcpyAccelNonblocking(const unsigned char* data,
                                       size_t data_length,
                                       unsigned char* result,
-                                      int* success_flag);
+                                      int64_t* success_flag);
 
 int MemcpyAccel(const unsigned char* data,
                            size_t data_length,
                            unsigned char* result);
 
-volatile int MemcpyBlockOnCompletion(volatile int * completion_flag);
+volatile int64_t MemcpyBlockOnCompletion(volatile int64_t * completion_flag);
 
 int MemcpyAccelMulti(const unsigned char** data,
                 unsigned int** data_length,
                 unsigned char* result,
                 const int num_benchmark);
- 
+
 
 #endif //__ACCEL_H

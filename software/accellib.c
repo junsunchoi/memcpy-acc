@@ -29,7 +29,7 @@ unsigned char * MemcpyAccelSetup(size_t write_region_size) {
     return fixed_alloc_region;
 }
 
-volatile int MemcpyBlockOnCompletion(volatile int * completion_flag) {
+volatile int64_t MemcpyBlockOnCompletion(volatile int64_t * completion_flag) {
     uint64_t retval;
 #ifndef NOACCEL_DEBUG
     ROCC_INSTRUCTION_D(MEMCPY_OPCODE, retval, FUNCT_CHECK_COMPLETION);
@@ -44,10 +44,10 @@ volatile int MemcpyBlockOnCompletion(volatile int * completion_flag) {
     return *completion_flag;
 }
 
-void MemcpyAccelNonblocking(const unsigned char* data, 
+void MemcpyAccelNonblocking(const unsigned char* data,
                             size_t data_length,
-                            unsigned char* result, 
-                            int* success_flag) {
+                            unsigned char* result,
+                            int64_t* success_flag) {
 #ifndef NOACCEL_DEBUG
     ROCC_INSTRUCTION_SS(MEMCPY_OPCODE,
                         (uint64_t)data,
@@ -61,18 +61,18 @@ void MemcpyAccelNonblocking(const unsigned char* data,
 #endif
 }
 
-int MemcpyAccel(const unsigned char* data, 
-                size_t data_length, 
+int MemcpyAccel(const unsigned char* data,
+                size_t data_length,
                 unsigned char* result) {
-    int completion_flag = 0;
+    int64_t completion_flag = 0;
 
 #ifdef NOACCEL_DEBUG
     printf("completion_flag addr : 0x%x\n", &completion_flag);
 #endif
 
-    MemcpyAccelNonblocking(data, 
-                            data_length, 
-                            result, 
+    MemcpyAccelNonblocking(data,
+                            data_length,
+                            result,
                             &completion_flag);
     return MemcpyBlockOnCompletion(&completion_flag);
 }
@@ -87,8 +87,8 @@ int MemcpyAccelMulti(const unsigned char** data,
 #endif
     unsigned int result_area_consumed = 0;
     for(int i=0; i<num_benchmark; ++i){
-        MemcpyAccelNonblocking(data[i], 
-                                *(data_length[i]), 
+        MemcpyAccelNonblocking(data[i],
+                                *(data_length[i]),
                                 result+result_area_consumed,
                                 &completion_flag);
         result_area_consumed += *(data_length[i]);
