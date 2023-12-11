@@ -61,7 +61,7 @@ void MemcpyAccelNonblocking(const unsigned char* data,
 #endif
 }
 
-int MemcpyAccel(const unsigned char* data,
+int64_t MemcpyAccel(const unsigned char* data,
                 size_t data_length,
                 unsigned char* result) {
     int64_t completion_flag = 0;
@@ -77,11 +77,11 @@ int MemcpyAccel(const unsigned char* data,
     return MemcpyBlockOnCompletion(&completion_flag);
 }
 
-int MemcpyAccelMulti(const unsigned char** data,
+int64_t MemcpyAccelMulti(const unsigned char** data,
                 unsigned int** data_length,
                 unsigned char* result,
                 const int num_benchmark) {
-    int completion_flag = 0;
+    int64_t completion_flag = 0;
 #ifdef NOACCEL_DEBUG
     printf("completion_flag addr : 0x%x\n", &completion_flag);
 #endif

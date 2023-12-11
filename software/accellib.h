@@ -3,7 +3,12 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#define USING_OPCODE8
+#ifdef USING_OPCODE8
+#include "rocc_opcode8.h"
+#else
 #include "rocc.h"
+#endif
 #include <stdbool.h>
 
 #define MEMCPY_OPCODE 0
@@ -20,13 +25,13 @@ void MemcpyAccelNonblocking(const unsigned char* data,
                                       unsigned char* result,
                                       int64_t* success_flag);
 
-int MemcpyAccel(const unsigned char* data,
+int64_t MemcpyAccel(const unsigned char* data,
                            size_t data_length,
                            unsigned char* result);
 
 volatile int64_t MemcpyBlockOnCompletion(volatile int64_t * completion_flag);
 
-int MemcpyAccelMulti(const unsigned char** data,
+int64_t MemcpyAccelMulti(const unsigned char** data,
                 unsigned int** data_length,
                 unsigned char* result,
                 const int num_benchmark);

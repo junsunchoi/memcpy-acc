@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+set -ex
+
 BENCHDIR=memcpy-multi
 HELPER_H=memcpy-multi/data_helper.h
 
@@ -47,8 +51,10 @@ echo "};" >> $HELPER_H
 cp *.c $BENCHDIR
 cp *.h $BENCHDIR
 cd $BENCHDIR
-riscv64-unknown-elf-gcc -fno-common -fno-builtin-printf -specs=htif_nano.specs -c accellib.c
-riscv64-unknown-elf-gcc -fno-common -fno-builtin-printf -specs=htif_nano.specs -c test-multi.c
-riscv64-unknown-elf-gcc -static -specs=htif_nano.specs accellib.o test-multi.o -o test-multi.riscv
-
-
+riscv64-unknown-elf-gcc -g -fno-common -fno-builtin-printf -specs=htif_nano.specs -c accellib.c
+riscv64-unknown-elf-gcc -g -fno-common -fno-builtin-printf -specs=htif_nano.specs -c test-multi.c
+riscv64-unknown-elf-gcc -g -static -specs=htif_nano.specs accellib.o test-multi.o -o test-multi.riscv
+riscv64-unknown-elf-objdump -S test-multi.riscv > test-multi.dump
+riscv64-unknown-elf-gcc -g -fno-common -fno-builtin-printf -specs=htif_nano.specs -c test-simple.c
+riscv64-unknown-elf-gcc -g -static -specs=htif_nano.specs accellib.o test-simple.o -o test-simple.riscv
+riscv64-unknown-elf-objdump -S test-simple.riscv > test-simple.dump
