@@ -3,7 +3,13 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#define OPCODE8
+#ifndef OPCODE8
 #include "rocc.h"
+#else
+#include "rocc_opcode8.h"
+#endif
+
 #include <stdbool.h>
 
 #define MEMCPY_OPCODE 0
@@ -30,6 +36,6 @@ int MemcpyAccelMulti(const unsigned char** data,
                 unsigned int** data_length,
                 unsigned char* result,
                 const int num_benchmark);
- 
+
 
 #endif //__ACCEL_H
