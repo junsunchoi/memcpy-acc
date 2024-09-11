@@ -1,8 +1,8 @@
 // Copied from compressacc
 package memcpyacc
 
-import Chisel._
-import chisel3.{Printable}
+import chisel3._
+import chisel3.util._
 import freechips.rocketchip.tile._
 import org.chipsalliance.cde.config._
 import freechips.rocketchip.diplomacy._
@@ -17,16 +17,16 @@ case object MemcpyAccelTLB extends Field[Option[TLBConfig]](None)
 class L2ReqInternal extends Bundle {
   val addr = UInt()
   val size = UInt()
-  val data = UInt(width=256)
+  val data = UInt(256.W)
   val cmd = UInt()
 }
 
 class L2RespInternal extends Bundle {
-  val data = UInt(width=256)
+  val data = UInt(256.W)
 }
 
 class L2InternalTracking extends Bundle {
-  val addrindex = UInt(width=5)
+  val addrindex = UInt(5.W)
   val tag = UInt()
 }
 
@@ -56,9 +56,9 @@ class L2MemHelperModule(outer: L2MemHelper, printInfo: String = "", queueRequest
   val io = IO(new Bundle {
     val userif = Flipped(new L2MemHelperBundle)
 
-    val sfence = Bool(INPUT)
+    val sfence = Input(Bool())
     val ptw = new TLBPTWIO
-    val status = Valid(new MStatus).flip
+    val status = Flipped(Valid(new MStatus))
   })
 
   val (dmem, edge) = outer.masterNode.out.head
@@ -83,7 +83,7 @@ class L2MemHelperModule(outer: L2MemHelper, printInfo: String = "", queueRequest
 
   val status = Reg(new MStatus)
   when (io.status.valid) {
-    CompressAccelLogger.logInfo(printInfo + " setting status.dprv to: %x compare %x\n", io.status.bits.dprv, UInt(PRV.M))
+    CompressAccelLogger.logInfo(printInfo + " setting status.dprv to: %x compare %x\n", io.status.bits.dprv, PRV.M.U)
     status := io.status.bits
   }
 
@@ -92,17 +92,17 @@ class L2MemHelperModule(outer: L2MemHelper, printInfo: String = "", queueRequest
   tlb.io.req.bits.vaddr := request_input.bits.addr
   tlb.io.req.bits.size := request_input.bits.size
   tlb.io.req.bits.cmd := request_input.bits.cmd
-  tlb.io.req.bits.passthrough := Bool(false)
+  tlb.io.req.bits.passthrough := false.B
   val tlb_ready = tlb.io.req.ready && !tlb.io.resp.miss
 
   io.ptw <> tlb.io.ptw
   tlb.io.ptw.status := status
   tlb.io.sfence.valid := io.sfence
-  tlb.io.sfence.bits.rs1 := Bool(false)
-  tlb.io.sfence.bits.rs2 := Bool(false)
-  tlb.io.sfence.bits.addr := UInt(0)
-  tlb.io.sfence.bits.asid := UInt(0)
-  tlb.io.kill := Bool(false)
+  tlb.io.sfence.bits.rs1 := false.B
+  tlb.io.sfence.bits.rs2 := false.B
+  tlb.io.sfence.bits.addr := 0.U
+  tlb.io.sfence.bits.asid := 0.U
+  tlb.io.kill := false.B
 
 
   val outstanding_req_addr = Module(new Queue(new L2InternalTracking, outer.numOutstandingRequestsAllowed * 4))
@@ -121,8 +121,8 @@ class L2MemHelperModule(outer: L2MemHelper, printInfo: String = "", queueRequest
     }
   }
 
-  val addr_mask_check = (UInt(0x1, 64.W) << request_input.bits.size) - UInt(1)
-  val assertcheck = RegNext((!request_input.valid) || ((request_input.bits.addr & addr_mask_check) === UInt(0)))
+  val addr_mask_check = (1.U(64.W) << request_input.bits.size) - 1.U
+  val assertcheck = RegNext((!request_input.valid) || ((request_input.bits.addr & addr_mask_check) === 0.U))
 
   when (!assertcheck) {
     CompressAccelLogger.logInfo(printInfo + " L2IF: access addr must be aligned to write width\n")
@@ -171,11 +171,11 @@ class L2MemHelperModule(outer: L2MemHelper, printInfo: String = "", queueRequest
     dmem.a.bits := bundle
   } .elsewhen (request_input.valid) {
     CompressAccelLogger.logInfo(printInfo + " ERR")
-    assert(Bool(false), "ERR")
+    assert(false.B, "ERR")
   }
 
-  val tl_resp_queues = Vec.fill(outer.numOutstandingRequestsAllowed)(
-    Module(new Queue(new L2RespInternal, 4, flow=true)).io)
+  val tl_resp_queues = VecInit(Seq.fill(outer.numOutstandingRequestsAllowed)(
+    Module(new Queue(new L2RespInternal, 4, flow=true)).io))
 
   val current_request_tag_has_response_space = tl_resp_queues(tags_for_issue_Q.io.deq.bits).enq.ready
 
@@ -308,5 +308,3 @@ class L2MemHelperModule(outer: L2MemHelper, printInfo: String = "", queueRequest
   }
 
 }
-
-

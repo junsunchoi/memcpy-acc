@@ -1,7 +1,7 @@
 package memcpyacc
 
-import Chisel._
-import chisel3.{Printable}
+import chisel3._
+import chisel3.util._
 import org.chipsalliance.cde.config._
 
 
@@ -40,9 +40,9 @@ class WriterBundle extends Bundle {
 }
 
 class LiteralChunk extends Bundle{
-  val chunk_data = UInt(OUTPUT, 256.W)
-  val chunk_size_bytes = UInt(OUTPUT, 6.W)
-  val is_final_chunk = Bool(OUTPUT)
+  val chunk_data = Output(UInt(256.W))
+  val chunk_size_bytes = Output(UInt(6.W))
+  val is_final_chunk = Output(Bool())
 }
 
 class LoadInfoBundle extends Bundle {
@@ -51,12 +51,12 @@ class LoadInfoBundle extends Bundle {
 }
 
 class MemLoaderConsumerBundle extends Bundle {
-  val user_consumed_bytes = UInt(INPUT, log2Up(32+1).W)
-  val available_output_bytes = UInt(OUTPUT, log2Up(32+1).W)
-  val output_valid = Bool(OUTPUT)
-  val output_ready = Bool(INPUT)
-  val output_data = UInt(OUTPUT, (32*8).W)
-  val output_last_chunk = Bool(OUTPUT)
+  val user_consumed_bytes = Input(UInt(log2Up(32+1).W))
+  val available_output_bytes = Output(UInt(log2Up(32+1).W))
+  val output_valid = Output(Bool())
+  val output_ready = Input(Bool())
+  val output_data = Output(UInt((32*8).W))
+  val output_last_chunk = Output(Bool())
 }
 
 

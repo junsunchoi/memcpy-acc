@@ -1,7 +1,7 @@
 package memcpyacc
 
-import Chisel._
-import chisel3.{Printable}
+import chisel3._
+import chisel3.util._
 import freechips.rocketchip.tile._
 import org.chipsalliance.cde.config._
 import freechips.rocketchip.diplomacy._
@@ -9,7 +9,7 @@ import freechips.rocketchip.rocket.{TLBConfig}
 import freechips.rocketchip.util.DecoupledHelper
 import freechips.rocketchip.rocket.constants.MemoryOpConstants
 
-class CommandRouter(val cmd_que_depth: Int)(implicit p: Parameters) 
+class CommandRouter(val cmd_que_depth: Int)(implicit p: Parameters)
   extends Module {
 
   val io = IO(new Bundle{

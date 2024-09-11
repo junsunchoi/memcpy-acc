@@ -2,7 +2,6 @@ package memcpyacc
 
 import chisel3._
 import chisel3.util._
-import chisel3.{Printable}
 import freechips.rocketchip.tile._
 import org.chipsalliance.cde.config._
 import freechips.rocketchip.diplomacy._
@@ -28,4 +27,3 @@ class WithMemcpyAccel extends Config ((site, here, up) => {
 class WithCompressAccelPrintf extends Config((site, here, up) => {
   case CompressAccelPrintfEnable => true
 })
-

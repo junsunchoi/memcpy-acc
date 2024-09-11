@@ -1,8 +1,7 @@
-
 package memcpyacc
 
-import Chisel._
-import chisel3.{Printable, VecInit, dontTouch}
+import chisel3._
+import chisel3.util._
 import freechips.rocketchip.tile._
 import org.chipsalliance.cde.config._
 import freechips.rocketchip.diplomacy._
@@ -90,7 +89,7 @@ class VecToWire32B extends Module{
 // Receives the L2 bandwidth in bits as a parameter
 class Xerox(l2bw: Int)(implicit p: Parameters) extends Module{
   val io = IO(new Bundle{
-    val mem_stream = (new MemLoaderConsumerBundle).flip //from MemLoader
+    val mem_stream = Flipped(new MemLoaderConsumerBundle) //from MemLoader
     val memwrites_in = Decoupled(new WriterBundle) //to MemWriter
   })
   // 1. Receive data from the memloader to data_queue
@@ -99,7 +98,7 @@ class Xerox(l2bw: Int)(implicit p: Parameters) extends Module{
   ** the memwriter module in Top.scala
   ** and the LiteralChunk bundle in Common.scala. */
 
-  val data_queue = Module(new Queue(new LiteralChunk, 5)) 
+  val data_queue = Module(new Queue(new LiteralChunk, 5))
   data_queue.io.enq.bits.chunk_data := io.mem_stream.output_data
   data_queue.io.enq.bits.chunk_size_bytes := io.mem_stream.available_output_bytes
   data_queue.io.enq.bits.is_final_chunk := io.mem_stream.output_last_chunk
@@ -110,8 +109,8 @@ class Xerox(l2bw: Int)(implicit p: Parameters) extends Module{
   data_queue.io.enq.valid := fire_read.fire(data_queue.io.enq.ready)
   io.mem_stream.output_ready := fire_read.fire(io.mem_stream.output_valid)
   io.mem_stream.user_consumed_bytes := io.mem_stream.available_output_bytes
-  
-  // 2. Write the data via Memwriter (Reverse the data) 
+
+  // 2. Write the data via Memwriter (Reverse the data)
   val chunk_size_wire = Wire(UInt(6.W))
   chunk_size_wire := data_queue.io.deq.bits.chunk_size_bytes
   val chunk_data_vec = Wire(Vec(l2bw/8, UInt(8.W)))
@@ -127,10 +126,9 @@ class Xerox(l2bw: Int)(implicit p: Parameters) extends Module{
     data_queue.io.deq.valid,
     io.memwrites_in.ready
   )
-  io.memwrites_in.bits.data := remap_vec 
+  io.memwrites_in.bits.data := remap_vec
   io.memwrites_in.bits.validbytes := chunk_size_wire
   io.memwrites_in.bits.end_of_message := data_queue.io.deq.bits.is_final_chunk
   io.memwrites_in.valid := fire_write.fire(io.memwrites_in.ready)
   data_queue.io.deq.ready := fire_write.fire(data_queue.io.deq.valid)
 }
-

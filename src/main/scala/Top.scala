@@ -1,7 +1,6 @@
 package memcpyacc
 
-import Chisel._
-import chisel3.{Printable, DontCare}
+import chisel3._
 import freechips.rocketchip.tile._
 import org.chipsalliance.cde.config._
 import freechips.rocketchip.diplomacy._
