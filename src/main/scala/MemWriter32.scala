@@ -65,6 +65,10 @@ class MemWriter32(val cmd_que_depth: Int = 4, val write_cmp_flag:Boolean = true)
   val QUEUE_DEPTHS = 16
   val write_start_index = RegInit(0.U(log2Up(NUM_QUEUES+1).W))
   val mem_resp_queues = VecInit(Seq.fill(NUM_QUEUES)(Module(new Queue(UInt(8.W), QUEUE_DEPTHS)).io))
+  for ( queueno <- 0 until NUM_QUEUES ) {
+    mem_resp_queues(queueno).enq.bits := 0.U
+    mem_resp_queues(queueno).deq.ready := false.B
+  }
 
   val len_to_write = incoming_writes_Q.io.deq.bits.validbytes
 

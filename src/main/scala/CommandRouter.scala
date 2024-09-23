@@ -23,7 +23,6 @@ class CommandRouter(val cmd_que_depth: Int)(implicit p: Parameters)
     val dest_info = Decoupled(new DstInfo) //to writer unit
     val bufs_completed = Input(UInt(64.W)) //from writer unit
     val no_writes_inflight = Input(Bool()) //from writer unit
-    val num_bytes = Decoupled(UInt(32.W)) //to Xerox
   })
   val FUNCT_SFENCE                        = 0.U
   val FUNCT_SRC_INFO                      = 1.U
@@ -55,8 +54,6 @@ class CommandRouter(val cmd_que_depth: Int)(implicit p: Parameters)
   )
   src_info_queue.io.enq.valid := src_info_fire.fire(src_info_queue.io.enq.ready)
   io.src_info <> src_info_queue.io.deq
-  io.num_bytes.bits := src_info_queue.io.deq.bits.isize
-  io.num_bytes.valid := src_info_queue.io.deq.fire
 
   // Memwriter interface
   val dest_info_queue = Module(new Queue(new DstInfo, 4))
@@ -79,7 +76,7 @@ class CommandRouter(val cmd_que_depth: Int)(implicit p: Parameters)
     bufs_completed_when_start := io.bufs_completed
     }
   }
-  when(io.rocc_in.fire && cur_funct ===FUNCT_CHECK_COMPLETION){
+  when(io.rocc_in.fire && cur_funct === FUNCT_CHECK_COMPLETION){
     track_dispatched_src_infos := 0.U
     bufs_completed_when_start := io.bufs_completed
   }

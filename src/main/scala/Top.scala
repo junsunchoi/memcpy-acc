@@ -61,7 +61,7 @@ class MemcpyAccelImp(outer: MemcpyAccel)(implicit p: Parameters)
   cmd_router.io.bufs_completed := memwriter.io.bufs_completed
   cmd_router.io.no_writes_inflight := memwriter.io.no_writes_inflight
 
- // Boilerplate code for l2 mem helper
+  // Boilerplate code for l2 mem helper
   outer.l2_memloader.module.io.sfence <> cmd_router.io.sfence_out
   outer.l2_memloader.module.io.status.valid := cmd_router.io.dmem_status_out.valid
   outer.l2_memloader.module.io.status.bits := cmd_router.io.dmem_status_out.bits.status

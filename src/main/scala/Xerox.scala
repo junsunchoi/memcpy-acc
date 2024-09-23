@@ -114,7 +114,9 @@ class Xerox(l2bw: Int)(implicit p: Parameters) extends Module{
   val chunk_size_wire = Wire(UInt(6.W))
   chunk_size_wire := data_queue.io.deq.bits.chunk_size_bytes
   val chunk_data_vec = Wire(Vec(l2bw/8, UInt(8.W)))
-  val reverse_data = Wire(UInt(l2bw.W))
+  for (i <- 0 until l2bw/8) {
+    chunk_data_vec(i) := 0.U
+  }
   for(i <- 0 to l2bw/8-1){
     chunk_data_vec(chunk_size_wire-1.U-i.U) := data_queue.io.deq.bits.chunk_data(8*(i+1)-1, 8*i)
   }
