@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#define OPCODE8
+//#define OPCODE8
 #ifndef OPCODE8
 #include "rocc.h"
 #else
