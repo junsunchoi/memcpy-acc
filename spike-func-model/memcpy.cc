@@ -25,8 +25,8 @@ reg_t memcpy_t::custom0(rocc_insn_t insn, reg_t xs1, reg_t UNUSED xs2){
       }
       break;
     case 3: //Check completion
-      //printf("m[cmpflg]=0x%lx\n", isize==size_processed ? 1 : 0);
       p->get_mmu()->store<uint64_t>(cmpflag, isize==size_processed ? 1 : 0);
+      printf("m[cmpflg]=0x%lx\n", isize==size_processed ? 1 : 0);
       return 1; // dummy
       break;
     case 4: //Custom function added to check the output.

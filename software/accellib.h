@@ -19,6 +19,7 @@
 #define FUNCT_DEST_INFO 2
 #define FUNCT_CHECK_COMPLETION 3
 
+void MemcpyClearTLB(void);
 unsigned char * MemcpyAccelSetup(size_t write_region_size);
 
 void MemcpyAccelNonblocking(const unsigned char* data,

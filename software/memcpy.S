@@ -7,19 +7,17 @@
 #define CONFIG_CFG_ID 15
 #define CONFIG_ACC_ID 1
 
-/* void *memcpy(void *, const void *, size_t) */
+/* unsigned long *memcpy(void *, const void *, size_t) */
 .balign 8
 .section .text
 .global memcpy_internal
 memcpy_internal:
-	move t6, a0  /* Preserve return value */
-
 	.macro access op reg addr
 	\op \reg, \addr
 	.endm
 
 	.macro exit
-	move a0, t6
+	li a0, 0
 	ret
 	.endm
 
