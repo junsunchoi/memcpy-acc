@@ -52,6 +52,7 @@ int main() {
 
         rr_set_opc(OPC, CONFIG_CFG_ID);
         rr_fence(CONFIG_CFG_ID);
+        printf("Done with ReRoCC setup\n");
 
         MemcpyClearTLB();
 
